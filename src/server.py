@@ -8,19 +8,15 @@ app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
-
 @app.route('/')
-@nocache
 def hello():
-    count = get_hit_count()
     host=platform.node()
     DOCKER_SERVICE_NAME=os.getenv('DOCKER_SERVICE_NAME', host)
     if "{{" in DOCKER_SERVICE_NAME or "}}" in DOCKER_SERVICE_NAME:
         DOCKER_SERVICE_NAME="N/A"
     FOO=os.getenv('FOO', 'unset')
-    REDIS_HOST=os.getenv("REDIS_HOST",'unset')
-    print(f"Getting visits! {count}")
-    return render_template('index.html',visit_counts=count, hostname=host, DOCKER_SERVICE_NAME=DOCKER_SERVICE_NAME, FOO=FOO , redis_host=REDIS_HOST)
+    #print(f"Getting visits! {count}")
+    return render_template('index.html', hostname=host, DOCKER_SERVICE_NAME=DOCKER_SERVICE_NAME, FOO=FOO )
 
 @app.route('/health')
 def health():
