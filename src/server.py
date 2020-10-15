@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import  os, redis, time, platform
+import  os,  time, platform
 from flask import Flask, make_response, render_template
 from functools import wraps, update_wrapper
 from datetime import datetime
