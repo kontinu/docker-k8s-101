@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3'
 
 services:
   # middleware
@@ -7,16 +7,20 @@ services:
     environment:
       - FOO=from compose $OUT
       - REDIS_HOST=db
+      - DOCKER_SERVICE_NAME={{.Service.Name}}.{{.Task.Slot}}
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - ${HTTP_PORT:-5000}:5000
+    deploy:
+      replicas: 5
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-group: ec2-tutorial
+    #     awslogs-region: us-west-2
+    #     awslogs-stream-prefix: web
   # data tier
-  db:
-    image: redis:alpine
-  # frontend
-  nginx:
-    image: nginx:alpine
 
 
