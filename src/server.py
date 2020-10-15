@@ -7,34 +7,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-REDIS_HOST=os.getenv('REDIS_HOST', 'redis')
 
-cache = redis.Redis(host=REDIS_HOST, port=6379)
-
-def nocache(view):
-    @wraps(view)
-    def no_cache(*args, **kwargs):
-        response = make_response(view(*args, **kwargs))
-        response.headers['Last-Modified'] = datetime.now()
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '-1'
-        return response
-
-    return update_wrapper(no_cache, view)
-
-
-def get_hit_count():
-    retries = 5
-    while True:
-        try:
-            return cache.incr('hits')
-        except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
-                #raise exc
-                return "'No Redis Connection'"
-            retries -= 1
-            #time.sleep(0.1)
 
 @app.route('/')
 @nocache
