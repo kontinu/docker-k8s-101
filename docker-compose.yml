@@ -1,13 +1,22 @@
 version: '3.4'
 
 services:
+  # middleware
   app:
     image: kontinu/docker-k8s-101:${TAG:-v0.0}
     environment:
-      - FOO="from compose"
+      - FOO=from compose $OUT
+      - REDIS_HOST=db
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 5000:5000
+      - ${HTTP_PORT:-5000}:5000
+  # data tier
+  db:
+    image: redis:alpine
+  # frontend
+  nginx:
+    image: nginx:alpine
+
 
